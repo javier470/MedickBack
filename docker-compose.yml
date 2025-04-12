@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql
+    # restart: always
+    container_name: mysqlMedicDB
+    environment:
+      MYSQL_ROOT_PASSWORD: admin1234
+      MYSQL_DATABASE: MedicDb
+      MYSQL_USER: usrDB
+      MYSQL_PASSWORD: a1234
+    volumes:
+      - ./db_data:/var/lib/mysql 
+    ports:
+      - "3306:3306"
