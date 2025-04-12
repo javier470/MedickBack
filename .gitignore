@@ -1,2 +1,7 @@
-node_modules
-db_data/mysql.sock
+/node_modules/
+
+#Base de datos
+/db_data/*
+
+#Archivso de compilacion
+/dist/
