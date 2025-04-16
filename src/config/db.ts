@@ -1,14 +1,16 @@
+import dotenv from 'dotenv'
 import { Sequelize } from "sequelize";
-import config from "./config.js";
+
+dotenv.config();
 
 const sequelize = new Sequelize(
-  config.DB.database,
-  config.DB.username,
-  config.DB.password,
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: config.DB.host,
-    port: config.DB.port,
-    dialect: config.DB.dialect,
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    dialect: 'mysql',
     logging: false, // console.log permite logs para debbug / false evita los logs debug
   }
 );

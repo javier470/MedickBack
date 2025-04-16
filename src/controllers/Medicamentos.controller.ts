@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Medicamento from "../models/Medicamentos.model.js";
-import { validateExist } from "../utils/utils.js";
+import { validateExistData } from "../utils/utils.js";
 import { saveInHistory } from "./RegistroMedicamentos.controller.js";
 
 export const getMedicamentos = async (_req: Request, res: Response) => {
@@ -42,23 +42,19 @@ export const createMedicamento = async (req: Request, res: Response) => {
         Marca,
         Status_Medicamento: true
     }
-    if (validateExist(data)) {
-        try {
-            let registeredData = await Medicamento.findAll();
-            let matchedData = registeredData.filter(mdc => mdc.dataValues.Nombre_Medicamento == data.Nombre_Medicamento && mdc.dataValues.Marca == data.Marca)
-            if (matchedData.length > 0) {
-                let updated = await matchedData[0].update({ Stock: matchedData[0].dataValues.Stock + data.Stock, Fecha_Exp: data.Fecha_Exp });
-                return res.status(201).json({ message: `Se ha actualizado el registro ${updated.dataValues.Nombre_Medicamento}, Stock: ${updated.dataValues.Stock}` });
-            } else {
-                const nuevoMedicamento = await Medicamento.create(data);
-                return res.status(201).json(nuevoMedicamento);
-            }
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Error al crear el medicamento" });
+    validateExistData(data, res)
+    try {
+        let registeredData = await Medicamento.findAll();
+        let matchedData = registeredData.filter(mdc => mdc.dataValues.Nombre_Medicamento == data.Nombre_Medicamento && mdc.dataValues.Marca == data.Marca)
+        if (matchedData.length > 0) {
+            let updated = await matchedData[0].update({ Stock: matchedData[0].dataValues.Stock + data.Stock, Fecha_Exp: data.Fecha_Exp });
+            return res.status(201).json({ message: `Se ha actualizado el registro ${updated.dataValues.Nombre_Medicamento}, Stock: ${updated.dataValues.Stock}` });
+        } else {
+            const nuevoMedicamento = await Medicamento.create(data);
+            return res.status(201).json(nuevoMedicamento);
         }
-    } else {
-        res.status(400).json({ message: "No se ingresaron todos los datos" });
+    } catch (error) {
+        res.status(500).json({ message: "Error al crear el medicamento" });
     }
 }
 
@@ -94,7 +90,7 @@ export const buyMedicamento = async (req: Request, res: Response) => {
 
         await medicamento.update({ Stock: medicamento.dataValues.Stock - quantity })
             .then(() => {
-                saveInHistory(quantity, quantity*medicamento.dataValues.Precio, medicamento.dataValues.IdMedicamento);
+                saveInHistory(quantity, quantity * medicamento.dataValues.Precio, medicamento.dataValues.IdMedicamento, res);
             });
         return res.status(404).json({ message: `Compra realizada de ${medicamento.dataValues.Nombre_Medicamento} cantidad: ${quantity}` });
     } catch (err) {

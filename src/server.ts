@@ -1,7 +1,8 @@
+import dotenv from "dotenv";
+
+dotenv.config({ path: '.env' });
 import app from "./app.js";
 import sequelize from "./config/db.js";
-import config from "./config/config.js";
-import dotenv from "dotenv";
 import morgan from "morgan";
 import './models/Citas.model.js'
 import './models/Especialidad.model.js'
@@ -14,14 +15,13 @@ import './models/RegistroMedicamentos.model.js'
 
 
 
-dotenv.config();
 
-const PORT = config.PORT;
+const PORT = process.env.PORT;
 
 sequelize.authenticate()
   .then(async () => {
     console.log(`🐬 Conexión a MySQL Correcta`)
-    await sequelize.sync({ alter: true }); // Si se pone en true borrara la base de datos y la creara de nuevo
+    await sequelize.sync({ alter: false }); // Si se pone en true borrara la base de datos y la creara de nuevo
   })
   .then(() => {
     app.use(morgan("dev"))
@@ -30,6 +30,7 @@ sequelize.authenticate()
     });
   })
   .catch((err) => {
+    console.log(process.env.DB_USER)
     console.log(`❌ Error al conectar a MySQL: ${err}`)
   })
 
