@@ -7,7 +7,6 @@ export const UserLogin = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     validateExistData({ username, password }, res);
     try {
-        //login jwt create 
         const existUser = await Usuario.findOne({ where: { Email_Usuario: username } });
         if (!existUser) {
             return res.status(404).json({ message: `Usuario o contraseña inválidos` })
@@ -52,4 +51,9 @@ export const RegisterUser = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(500).json({ message: "Error al intentar registrarse", error: err });
     }
+}
+
+export const Auth = async (req: Request, res: Response) => {
+    
+    return res.status(200).json({ message: 'OK' })
 }
