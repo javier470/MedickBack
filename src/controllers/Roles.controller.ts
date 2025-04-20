@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Role from "../models/Roles.model.js";
-import { IRol } from "../interfaces/Roles.interface.js";
 import { validateExistData } from "../utils/utils.js";
 
 export const getRoles = async (_req: Request, res: Response) => {
@@ -18,7 +17,7 @@ export const createRole = async (req: Request, res: Response) => {
   const { Nombre_Rol } = req.body;
 
   validateExistData(Nombre_Rol, res);
-  
+
   try {
     const nuevoRol = await Role.create({
       Nombre_Rol,
@@ -47,6 +46,6 @@ export const deleteRole = async (req: Request, res: Response) => {
   const rol = await Role.findByPk(id);
   if (!rol) return res.status(404).json({ message: "Rol no encontrado" });
 
-  await rol.destroy();
+  await rol.update({Status_rol: false});
   res.json({ message: "Rol eliminado" });
 };

@@ -1,3 +1,5 @@
+import Role from "../models/Roles.model.js";
+
 export interface IUsuario{
     IdUsuario?: number;
     Nombre_Usuario: string;
@@ -7,4 +9,5 @@ export interface IUsuario{
     IdEspecialidad: number;
     IdRole: number;
     Status_usuario: boolean;
+    Role?: Role;
 }
